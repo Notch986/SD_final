@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Encuestas</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket;
+        let room;
+
+        function loadRooms() {
+            fetch('/rooms')
+                .then(response => response.json())
+                .then(data => {
+                    const roomsList = document.getElementById('rooms');
+                    roomsList.innerHTML = '';
+                    data.forEach(room => {
+                        const li = document.createElement('li');
+                        li.textContent = room;
+                        li.onclick = () => {
+                            document.getElementById('room').value = room;
+                        };
+                        roomsList.appendChild(li);
+                    });
+                });
+        }
+
+        function connectToServer() {
+            const name = document.getElementById('name').value;
+            room = document.getElementById('room').value;
+            socket = io();
+
+            socket.emit('joinRoom', { room, name });
+
+            socket.on('message', (message) => {
+                const messages = document.getElementById('messages');
+                const messageElement = document.createElement('li');
+                messageElement.textContent = message;
+                messages.appendChild(messageElement);
+            });
+
+            socket.on('rooms', (rooms) => {
+                const roomsList = document.getElementById('rooms');
+                roomsList.innerHTML = '';
+                rooms.forEach(room => {
+                    const li = document.createElement('li');
+                    li.textContent = room;
+                    li.onclick = () => {
+                        document.getElementById('room').value = room;
+                    };
+                    roomsList.appendChild(li);
+                });
+            });
+
+            socket.on('survey', (survey) => {
+                displaySurvey(survey);
+            });
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            socket.emit('message', { room, message });
+        }
+
+        function createSurvey() {
+            const question = document.getElementById('question').value;
+            const options = Array.from(document.getElementsByClassName('option')).map(option => option.value);
+            const survey = { question, options };
+            socket.emit('createSurvey', { room, survey });
+        }
+
+        function submitResponse() {
+            const selectedOption = document.querySelector('input[name="option"]:checked').value;
+            socket.emit('submitResponse', { room, response: selectedOption });
+        }
+
+        function displaySurvey(survey) {
+            const surveyContainer = document.getElementById('survey');
+            surveyContainer.innerHTML = `
+                <p>${survey.question}</p>
+                ${survey.options.map((option, index) => `
+                    <div>
+                        <input type="radio" name="option" id="option${index}" value="${option}">
+                        <label for="option${index}">${option}</label>
+                    </div>
+                `).join('')}
+                <button onclick="submitResponse()">Submit Response</button>
+            `;
+        }
+    </script>
+</head>
+<body>
+    <h1>Juego de Encuestas en Tiempo Real</h1>
+    <div>
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" placeholder="Ingresa tu nombre">
+        <label for="room">Sala:</label>
+        <input type="text" id="room" placeholder="Ingresa la sala">
+        <button onclick="connectToServer()">Conectar</button>
+        <button onclick="loadRooms()">Cargar Salas</button>
+    </div>
+    <div>
+        <input type="text" id="message" placeholder="Mensaje">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+    <ul id="messages"></ul>
+
+    <h2>Crear Encuesta</h2>
+    <div>
+        <input type="text" id="question" placeholder="Pregunta">
+        <div id="options">
+            <input type="text" class="option" placeholder="Opción 1">
+            <input type="text" class="option" placeholder="Opción 2">
+        </div>
+        <button onclick="createSurvey()">Crear Encuesta</button>
+    </div>
+
+    <h2>Encuesta</h2>
+    <div id="survey"></div>
+
+    <h2>Salas Disponibles</h2>
+    <ul id="rooms"></ul>
+</body>
+</html>
