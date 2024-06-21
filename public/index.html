@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego de Encuestas</title>
     <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="styles.css">
     <script>
         let socket;
         let room;
@@ -92,7 +93,7 @@
 </head>
 <body>
     <h1>Juego de Encuestas en Tiempo Real</h1>
-    <div>
+    <div class="form">
         <label for="name">Nombre:</label>
         <input type="text" id="name" placeholder="Ingresa tu nombre">
         <label for="room">Sala:</label>
@@ -100,14 +101,14 @@
         <button onclick="connectToServer()">Conectar</button>
         <button onclick="loadRooms()">Cargar Salas</button>
     </div>
-    <div>
+    <div class="form">
         <input type="text" id="message" placeholder="Mensaje">
         <button onclick="sendMessage()">Enviar</button>
     </div>
-    <ul id="messages"></ul>
+    <ul id="messages" class="messages"></ul>
 
     <h2>Crear Encuesta</h2>
-    <div>
+    <div class="form">
         <input type="text" id="question" placeholder="Pregunta">
         <div id="options">
             <input type="text" class="option" placeholder="Opción 1">
@@ -117,9 +118,9 @@
     </div>
 
     <h2>Encuesta</h2>
-    <div id="survey"></div>
+    <div id="survey" class="survey"></div>
 
     <h2>Salas Disponibles</h2>
-    <ul id="rooms"></ul>
+    <ul id="rooms" class="rooms"></ul>
 </body>
 </html>

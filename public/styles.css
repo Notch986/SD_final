@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    margin: 5px 0;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin: 5px;
+    width: 80%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.messages, .rooms, .survey {
+    list-style-type: none;
+    padding: 0;
+}
+
+.messages li, .rooms li {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.survey p {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.survey div {
+    margin-bottom: 5px;
+}
+
+.survey button {
+    background-color: #007bff;
+}
+
+.survey button:hover {
+    background-color: #0056b3;
+}
