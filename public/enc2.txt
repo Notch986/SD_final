@@ -1,0 +1,54 @@
+Pregunta: ¿Cuál es tu color favorito?
+- Rojo
+- Azul
+- Verde
+
+Pregunta: ¿Cuál es tu animal favorito?
+- Perro
+- Gato
+- Pájaro
+- Pescado
+Pregunta: ¿Cuál es tu color favorito?
+- Rojo
+- Azul
+- Verde
+
+Pregunta: ¿Cuál es tu animal favorito?
+- Perro
+- Gato
+- Pájaro
+- Pescado
+
+Pregunta: ¿Cuál es tu color favorito?
+- Rojo
+- Azul
+- Verde
+
+Pregunta: ¿Cuál es tu animal favorito?
+- Perro
+- Gato
+- Pájaro
+- Pescado
+
+Pregunta: ¿Cuál es tu color favorito?
+- Rojo
+- Azul
+- Verde
+
+Pregunta: ¿Cuál es tu animal favorito?
+- Perro
+- Gato
+- Pájaro
+- Pescado
+
+Pregunta: ¿Cuál es tu color favorito?
+- Rojo
+- Azul
+- Verde
+
+Pregunta: ¿Cuál es tu animal favorito?
+- Perro
+- Gato
+- Pájaro
+- Pescado
+

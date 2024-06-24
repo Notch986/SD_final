@@ -25,16 +25,16 @@ io.on('connection', (socket) => {
         console.log(`User ${name} joined room: ${room}`);
         console.log('Rooms:', rooms);
 
-        // Enviar la encuesta a los nuevos usuarios de la sala
+        // Enviar las encuestas a los nuevos usuarios de la sala
         if (surveys[room]) {
             socket.emit('survey', surveys[room]);
         }
     });
 
-    socket.on('createSurvey', ({ room, survey }) => {
-        surveys[room] = survey;
-        io.in(room).emit('survey', survey);
-        console.log(`Survey created in room ${room}:`, survey);
+    socket.on('createSurvey', ({ room, surveys: newSurveys }) => {
+        surveys[room] = newSurveys;
+        io.in(room).emit('survey', newSurveys);
+        console.log(`Surveys created in room ${room}:`, newSurveys);
     });
 
     socket.on('submitResponse', ({ room, response }) => {
@@ -64,6 +64,6 @@ app.get('/rooms', (req, res) => {
     res.json(Object.keys(rooms));
 });
 
-server.listen(3000, '0.0.0.0', () => {
-    console.log('Server is running on port 3000');
+server.listen(3001, '0.0.0.0', () => {
+    console.log('Server is running on port 3001');
 });
