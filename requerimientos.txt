@@ -16,10 +16,11 @@ node server.js
     -   
 
 backend 
-    -  el que instala pueda crear las salas 
+    -  login  docente pueda crear sala
+     - el que instala (logeado) pueda crear las salas 
     -  CRUD de salas     
     -  ver las respuestas de calificacion en el mismo programa (tabla)
-    -   login  docente pueda crear sala
+    -
 
 
 
@@ -33,4 +34,3 @@ frontend
 electro
     - buscar hacer el ejecutable pruebas
     - hacer los  mookups 
-    
