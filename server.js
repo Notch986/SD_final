@@ -12,11 +12,13 @@ app.use(express.static('public'));
 
 // agregando rutas de la api
 // ver ejemplo de rutas en src/routes/items
-const itemsRouter = require('./src/routes/items');
+const itemRouter = require('./src/routes/item');
 const authRouter = require('./src/routes/auth');
+const roomRouter = require('./src/routes/room');
 const authenticate = require('./src/middleware/authMiddleware');
 
-app.use('/api/items', authenticate, itemsRouter); // Proteger las rutas de items
+app.use('/api/items', authenticate, itemRouter); // Proteger las rutas de items
+app.use('/api/rooms', authenticate, roomRouter);
 app.use('/api/auth', authRouter);
 
 app.listen(port, '0.0.0.0', () => {
