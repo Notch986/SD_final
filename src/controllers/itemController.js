@@ -1,5 +1,5 @@
 // ejemplo de controlador
-const itemsModel = require('../models/itemsModel');
+const itemsModel = require('../models/itemModel');
 
 const getItems = async (req, res) => {
   try {

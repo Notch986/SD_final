@@ -1,12 +1,12 @@
 // ejemplo de rutas
 const express = require('express');
 const router = express.Router();
-const itemsController = require('../controllers/itemsController');
+const itemController = require('../controllers/itemController');
 
 // Ruta para obtener todos los elementos
-router.get('/', itemsController.getItems);
+router.get('/', itemController.getItems);
 
 // Ruta para agregar un nuevo elemento
-router.post('/', itemsController.addItem);
+router.post('/', itemController.addItem);
 
 module.exports = router;
