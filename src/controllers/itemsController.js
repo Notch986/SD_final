@@ -1,9 +1,9 @@
 // ejemplo de controlador
-const itemsModel = require('../models/itemsModel');
+const Item = require('../models/itemsModel');
 
 const getItems = async (req, res) => {
   try {
-    const items = await itemsModel.getItems();
+    const items = await Item.findAll({attributes: ['id', 'name']});
     res.json(items);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -12,7 +12,7 @@ const getItems = async (req, res) => {
 
 const addItem = async (req, res) => {
   try {
-    const newItem = await itemsModel.addItem(req.body);
+    const newItem = await Item.create(req.body);
     res.status(201).json(newItem);
   } catch (err) {
     res.status(500).json({ error: err.message });

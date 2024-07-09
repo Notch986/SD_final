@@ -1,5 +1,6 @@
 require('dotenv').config();
-const port = process.env.PORT || 3001;
+const { sequelize } = require('./src/config/db');
+const PORT = process.env.PORT || 3001;
 
 const express = require('express');
 const app = express();
@@ -19,6 +20,8 @@ const authenticate = require('./src/middleware/authMiddleware');
 app.use('/api/items', authenticate, itemsRouter); // Proteger las rutas de items
 app.use('/api/auth', authRouter);
 
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on port ${port}`);
-});
+sequelize.sync().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  });

@@ -1,18 +1,19 @@
-// models/itemsModel.js
-const pool = require('../config/db');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const getItems = async () => {
-  const res = await pool.query('SELECT * FROM items');
-  return res.rows;
-};
+const Item = sequelize.define('Item', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+  },
+});
 
-const addItem = async (item) => {
-  const { name } = item;
-  const res = await pool.query('INSERT INTO items (name) VALUES ($1) RETURNING *', [name]);
-  return res.rows[0];
-};
+console.log(Item === sequelize.models.Item);
 
-module.exports = {
-  getItems,
-  addItem,
-};
+module.exports = Item;

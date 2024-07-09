@@ -1,3 +1,4 @@
+/*
 const pool = require('../config/db');
 const bcrypt = require('bcrypt');
 
@@ -20,3 +21,32 @@ module.exports = {
   createUser,
   getUserByUsername,
 };
+*/
+
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
+
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  username: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+
+console.log(User === sequelize.models.User);
+
+module.exports = User;
