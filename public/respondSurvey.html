@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responder Encuesta</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        let socket;
+        let room;
+
+        function connectToRoom() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            room = urlParams.get('room');
+            socket = io();
+
+            socket.emit('joinRoom', { room, name });
+
+            socket.on('survey', (survey) => {
+                displaySurvey(survey);
+            });
+
+            socket.on('message', (message) => {
+                console.log(message);
+            });
+        }
+
+        function displaySurvey(surveys) {
+            const surveyContainer = document.getElementById('survey');
+            surveyContainer.innerHTML = surveys.map((survey, surveyIndex) => `
+                <div class="survey-section">
+                    <p>${survey.question}</p>
+                    ${survey.options.map((option, index) => `
+                        <div>
+                            <input type="radio" name="option${surveyIndex}" id="option${surveyIndex}_${index}" value="${option}">
+                            <label for="option${surveyIndex}_${index}">${option}</label>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('') + '<button onclick="submitResponse()">Enviar Respuesta</button>';
+        }
+
+        function submitResponse() {
+            const responses = [];
+            document.querySelectorAll('.survey-section').forEach((section, sectionIndex) => {
+                const selectedOption = section.querySelector(`input[name="option${sectionIndex}"]:checked`);
+                if (selectedOption) {
+                    responses.push(selectedOption.value);
+                }
+            });
+
+            socket.emit('submitResponse', { room, responses });
+            alert("Respuestas enviadas correctamente");
+        }
+
+        window.onload = connectToRoom;
+    </script>
+</head>
+<body>
+    <h1>Responder Encuesta</h1>
+    <div id="survey" class="survey"></div>
+</body>
+</html>

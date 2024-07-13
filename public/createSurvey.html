@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Encuesta</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Crear Encuesta</h1>
+    <input type="file" id="surveyFile" accept=".txt" onchange="handleFileUpload(event)">
+    <div id="surveyContainer"></div>
+    <button onclick="startSurvey()">Iniciar Encuesta</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -73,3 +73,13 @@ button:hover {
 .survey button:hover {
     background-color: #0056b3;
 }
+
+.question {
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.option {
+    width: calc(80% - 20px);
+}

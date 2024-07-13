@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -9,7 +10,7 @@ const io = socketIo(server);
 let rooms = {};
 let surveys = {};  // Para almacenar las encuestas
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
     console.log('A user connected');
@@ -37,9 +38,9 @@ io.on('connection', (socket) => {
         console.log(`Surveys created in room ${room}:`, newSurveys);
     });
 
-    socket.on('submitResponse', ({ room, response }) => {
-        console.log(`Response received in room ${room}:`, response);
-        io.in(room).emit('message', `Response received: ${response}`);
+    socket.on('submitResponse', ({ room, responses }) => {
+        console.log(`Response received in room ${room}:`, responses);
+        io.in(room).emit('message', `Response received: ${responses}`);
     });
 
     socket.on('message', ({ room, message }) => {
@@ -64,6 +65,6 @@ app.get('/rooms', (req, res) => {
     res.json(Object.keys(rooms));
 });
 
-server.listen(3001, '0.0.0.0', () => {
-    console.log('Server is running on port 3001');
+server.listen(3002, '0.0.0.0', () => {
+    console.log('Server is running on port 3002');
 });

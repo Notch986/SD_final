@@ -6,148 +6,7 @@
     <title>Juego de Encuestas en Tiempo Real</title>
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="styles.css">
-    <script>
-        let socket;
-        let room;
-        let isRoomCreator = false;
-
-        function loadRooms() {
-            fetch('/rooms')
-                .then(response => response.json())
-                .then(data => {
-                    const roomsList = document.getElementById('rooms');
-                    roomsList.innerHTML = '';
-                    data.forEach(room => {
-                        const li = document.createElement('li');
-                        li.textContent = room;
-                        const button = document.createElement('button');
-                        button.textContent = 'Conectar';
-                        button.onclick = () => {
-                            document.getElementById('room').value = room;
-                            connectToServer();
-                        };
-                        li.appendChild(button);
-                        roomsList.appendChild(li);
-                    });
-                });
-        }
-
-        function connectToServer() {
-            const name = document.getElementById('name').value;
-            room = document.getElementById('room').value;
-            socket = io();
-
-            socket.emit('joinRoom', { room, name });
-
-            socket.on('message', (message) => {
-                const messages = document.getElementById('messages');
-                const messageElement = document.createElement('li');
-                messageElement.className = 'message';
-                messageElement.textContent = message;
-                messages.appendChild(messageElement);
-                messages.scrollTop = messages.scrollHeight;
-            });
-
-            socket.on('rooms', (rooms) => {
-                const roomsList = document.getElementById('rooms');
-                roomsList.innerHTML = '';
-                rooms.forEach(room => {
-                    const li = document.createElement('li');
-                    li.textContent = room;
-                    const button = document.createElement('button');
-                    button.textContent = 'Conectar';
-                    button.onclick = () => {
-                        document.getElementById('room').value = room;
-                        connectToServer();
-                    };
-                    li.appendChild(button);
-                    roomsList.appendChild(li);
-                });
-            });
-
-            socket.on('survey', (survey) => {
-                displaySurvey(survey);
-            });
-
-            if (!isRoomCreator) {
-                document.getElementById('createSurveySection').style.display = 'none';
-            } else {
-                document.getElementById('createSurveySection').style.display = 'block';
-            }
-        }
-
-        function sendMessage() {
-            const message = document.getElementById('message').value;
-            socket.emit('message', { room, message });
-            document.getElementById('message').value = '';
-        }
-
-        function createSurvey() {
-            const question = document.getElementById('question').value;
-            const options = Array.from(document.getElementsByClassName('option')).map(option => option.value);
-            const survey = { question, options };
-            socket.emit('createSurvey', { room, survey });
-        }
-
-        function submitResponse() {
-            const selectedOption = document.querySelector('input[name="option"]:checked').value;
-            socket.emit('submitResponse', { room, response: selectedOption });
-        }
-
-        function displaySurvey(surveys) {
-            const surveyContainer = document.getElementById('survey');
-            surveyContainer.innerHTML = surveys.map((survey, surveyIndex) => `
-                <div class="survey-section">
-                    <p>${survey.question}</p>
-                    ${survey.options.map((option, index) => `
-                        <div>
-                            <input type="radio" name="option${surveyIndex}" id="option${surveyIndex}_${index}" value="${option}">
-                            <label for="option${surveyIndex}_${index}">${option}</label>
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('') + '<button onclick="submitResponse()">Enviar Respuesta</button>';
-        }
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const text = e.target.result;
-                    parseSurveyFile(text);
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        function parseSurveyFile(text) {
-            const lines = text.trim().split('\n');
-            let surveys = [];
-            let currentSurvey = null;
-
-            lines.forEach(line => {
-                if (line.startsWith('Pregunta: ')) {
-                    if (currentSurvey) {
-                        surveys.push(currentSurvey);
-                    }
-                    currentSurvey = {
-                        question: line.replace('Pregunta: ', '').trim(),
-                        options: []
-                    };
-                } else if (line.startsWith('- ') && currentSurvey) {
-                    currentSurvey.options.push(line.replace('- ', '').trim());
-                }
-            });
-
-            if (currentSurvey) {
-                surveys.push(currentSurvey);
-            }
-
-            // Send all surveys to the server
-            socket.emit('createSurvey', { room, surveys });
-        }
-    </script>
+    <script src="script.js"></script>
 </head>
 <body>
     <h1>Juego de Encuestas en Tiempo Real</h1>
@@ -156,33 +15,11 @@
         <input type="text" id="name" placeholder="Ingresa tu nombre">
         <label for="room">Sala:</label>
         <input type="text" id="room" placeholder="Ingresa la sala">
-        <button onclick="isRoomCreator = true; connectToServer()">Crear Sala</button>
+        <button onclick="createRoom(document.getElementById('name').value, document.getElementById('room').value)">Crear Sala</button>
         <button onclick="loadRooms()">Cargar Salas</button>
     </div>
 
-    <h2>Encuesta</h2>
-    <div id="survey" class="survey"></div>
-
     <h2>Salas Disponibles</h2>
     <ul id="rooms" class="rooms"></ul>
-
-    <div id="createSurveySection" class="form">
-        <h2>Crear Encuesta</h2>
-        <input type="text" id="question" placeholder="Pregunta">
-        <div id="options">
-            <input type="text" class="option" placeholder="Opción 1">
-            <input type="text" class="option" placeholder="Opción 2">
-        </div>
-        <button onclick="createSurvey()">Crear Encuesta</button>
-        <input type="file" id="surveyFile" accept=".txt" onchange="handleFileUpload(event)">
-    </div>
-
-    <div class="chat-container">
-        <ul id="messages" class="messages"></ul>
-        <div class="form chat-input">
-            <input type="text" id="message" placeholder="Mensaje">
-            <button onclick="sendMessage()">Enviar</button>
-        </div>
-    </div>
 </body>
 </html>
