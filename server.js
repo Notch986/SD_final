@@ -13,12 +13,11 @@ let surveys = {};  // Para almacenar las encuestas
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket) => {
-    console.log('A user connected');
-
     socket.on('joinRoom', ({ room, name }) => {
+        console.log("======== JOINING ROOM ==========");
         if (rooms[room]) {
             socket.join(room);
-            rooms[room].push(name);
+            rooms[room].push({id: socket.id, name});
             io.in(room).emit('message', `${name} joined the room ${room}`);
             io.to(room).emit('updateUsers', rooms[room]); // Notificar a todos en el room sobre la lista actualizada de usuarios
             console.log(`User ${name} joined room: ${room}`);
@@ -31,12 +30,15 @@ io.on('connection', (socket) => {
         } else {
             socket.emit('error', `Room ${room} does not exist. Please create it first.`);
         }
+        console.log("======== JOINING ROOM ==========");
     });
 
-    socket.on('createRoom', ({ room, name }) => {
+    socket.on('createRoom', ({ room, name}) => {
+        console.log("======== CREATING ROOM ==========");
         if (!rooms[room]) {
+            rooms[room] = [];
+            rooms[room].push({id: socket.id, name});
             socket.join(room);
-            rooms[room] = [name];
             io.emit('rooms', Object.keys(rooms)); // Notificar a todos sobre la lista actualizada de rooms
             io.in(room).emit('message', `${name} created and joined the room ${room}`);
             console.log(`User ${name} created and joined room: ${room}`);
@@ -44,17 +46,22 @@ io.on('connection', (socket) => {
         } else {
             socket.emit('error', `Room ${room} already exists. Please choose another name.`);
         }
+        console.log("======== CREATING ROOM ==========");
     });
 
     socket.on('createSurvey', ({ room, surveys: newSurveys }) => {
+        console.log("======== CREATING SURVEY ==========");
         surveys[room] = newSurveys;
         io.in(room).emit('survey', newSurveys);
         console.log(`Surveys created in room ${room}:`, newSurveys);
+        console.log("======== CREATING SURVEY ==========");
     });
 
     socket.on('submitResponse', ({ room, responses }) => {
+        console.log("======== SUBMITING RESPONSE ==========");
         console.log(`Response received in room ${room}:`, responses);
         io.in(room).emit('message', `Response received: ${responses}`);
+        console.log("======== SUBMITING RESPONSE ==========");
     });
 
     socket.on('message', ({ room, message }) => {
@@ -62,16 +69,17 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        console.log("======== DISCONNECTING ROOM ==========");
         for (const room in rooms) {
-            rooms[room] = rooms[room].filter(name => name !== socket.id);
-            if (rooms[room].length === 0) {
-                delete rooms[room];
-                delete surveys[room];
+            if (rooms[room].filter(user => user.id === socket.id).length > 0) {
+                rooms[room] = rooms[room].filter(user => user.id !== socket.id);
+                io.in(room).emit('message', `User with socket ID: ${socket.id} disconnected`);  
             }
         }
         io.emit('rooms', Object.keys(rooms));
-        console.log('A user disconnected');
+        console.log(`User with socket ID: ${socket.id} disconnected`);
         console.log('Rooms:', rooms);
+        console.log("======== DISCONNECTING ROOM ==========");
     });
 });
 

@@ -1,6 +1,7 @@
 let socket = io();
-
-let room = localStorage.getItem('room'); // Assuming the room name is stored in local storage
+let surveys = [];
+let name;
+let room; // Assuming the room name is stored in local storage
 
 function handleFileUpload(event) {
     const file = event.target.files[0];
@@ -16,7 +17,6 @@ function handleFileUpload(event) {
 
 function parseSurveyFile(text) {
     const lines = text.trim().split('\n');
-    let surveys = [];
     let currentSurvey = null;
 
     lines.forEach(line => {
@@ -62,13 +62,41 @@ function startSurvey() {
     socket.emit('startSurvey', { room: room });
     alert('La encuesta ha comenzado');
 }
+
 function joinRoom(name, room) {
     if (!name || name.trim() === "") {
         alert("Tu nombre no puede estar vacío. Por favor, ingresa un nombre válido.");
         return;
     }
-    socket.emit('joinRoom', { room, name });
+
     window.location.href = `respondSurvey.html?name=${name}&room=${room}`;
+}
+
+function connectToRoom() {
+    const urlParams = new URLSearchParams(window.location.search);
+    this.name = urlParams.get('name');
+    this.room = urlParams.get('room');
+
+    if (!socket) {
+        socket = io();
+
+        socket.on('connect', () => {
+            console.log('Socket connected with ID:', socket.id);
+
+            if (!isConnected) {
+                socket.emit('joinRoom', { room: this.room, name: this.name });
+                isConnected = true;
+            }
+        });
+
+        socket.on('survey', (survey) => {
+            displaySurvey(survey);
+        });
+
+        socket.on('message', (message) => {
+            console.log(message);
+        });
+    }
 }
 
 function createRoom(name, room) {
