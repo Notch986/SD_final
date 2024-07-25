@@ -63,11 +63,26 @@ function startSurvey() {
     alert('La encuesta ha comenzado');
 }
 function joinRoom(name, room) {
+    if (!name || name.trim() === "") {
+        alert("Tu nombre no puede estar vacío. Por favor, ingresa un nombre válido.");
+        return;
+    }
+    socket.emit('joinRoom', { room, name });
     window.location.href = `respondSurvey.html?name=${name}&room=${room}`;
 }
 
 function createRoom(name, room) {
-    socket.emit('joinRoom', { room, name });
+    if (!room || room.trim() === "") {
+        alert("El nombre del room no puede estar vacío. Por favor, ingresa un nombre válido.");
+        return;
+    }
+
+    if (!name || name.trim() === "") {
+        alert("Tu nombre no puede estar vacío. Por favor, ingresa un nombre válido.");
+        return;
+    }
+
+    socket.emit('createRoom', { room, name });
     window.location.href = `createSurvey.html?name=${name}&room=${room}`;
 }
 function loadRooms() {

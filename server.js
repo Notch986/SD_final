@@ -16,19 +16,33 @@ io.on('connection', (socket) => {
     console.log('A user connected');
 
     socket.on('joinRoom', ({ room, name }) => {
-        socket.join(room);
-        if (!rooms[room]) {
-            rooms[room] = [];
+        if (rooms[room]) {
+            socket.join(room);
+            rooms[room].push(name);
+            io.in(room).emit('message', `${name} joined the room ${room}`);
+            io.to(room).emit('updateUsers', rooms[room]); // Notificar a todos en el room sobre la lista actualizada de usuarios
+            console.log(`User ${name} joined room: ${room}`);
+            console.log('Rooms:', rooms);
+    
+            // Enviar las encuestas a los nuevos usuarios de la sala
+            if (surveys[room]) {
+                socket.emit('survey', surveys[room]);
+            }
+        } else {
+            socket.emit('error', `Room ${room} does not exist. Please create it first.`);
         }
-        rooms[room].push(name);
-        io.in(room).emit('message', `${name} joined the room ${room}`);
-        io.emit('rooms', Object.keys(rooms));
-        console.log(`User ${name} joined room: ${room}`);
-        console.log('Rooms:', rooms);
+    });
 
-        // Enviar las encuestas a los nuevos usuarios de la sala
-        if (surveys[room]) {
-            socket.emit('survey', surveys[room]);
+    socket.on('createRoom', ({ room, name }) => {
+        if (!rooms[room]) {
+            socket.join(room);
+            rooms[room] = [name];
+            io.emit('rooms', Object.keys(rooms)); // Notificar a todos sobre la lista actualizada de rooms
+            io.in(room).emit('message', `${name} created and joined the room ${room}`);
+            console.log(`User ${name} created and joined room: ${room}`);
+            console.log('Rooms:', rooms);
+        } else {
+            socket.emit('error', `Room ${room} already exists. Please choose another name.`);
         }
     });
 
