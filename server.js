@@ -57,10 +57,10 @@ io.on('connection', (socket) => {
         console.log("======== CREATING SURVEY ==========");
     });
 
-    socket.on('submitResponse', ({ room, responses }) => {
+    socket.on('submitResponse', ({ room, name, responses }) => {
         console.log("======== SUBMITING RESPONSE ==========");
-        console.log(`Response received in room ${room}:`, responses);
-        io.in(room).emit('message', `Response received: ${responses}`);
+        console.log(`Response received from ${name} in room ${room}:`, responses);
+        io.in(room).emit('response', {name, responses});
         console.log("======== SUBMITING RESPONSE ==========");
     });
 

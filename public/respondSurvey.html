@@ -10,11 +10,12 @@
     <script>
         let socket;
         let room;
+        let name;
         let isConnected = false;
 
         function connectToRoom() {
             const urlParams = new URLSearchParams(window.location.search);
-            const name = urlParams.get('name');
+            name = urlParams.get('name');
             room = urlParams.get('room');
 
             // Crear socket solo si no está conectado
@@ -41,6 +42,7 @@
                 socket.on('message', (message) => {
                     console.log(message);
                 });
+
             }
         }
 
@@ -68,7 +70,9 @@
                 }
             });
 
-            socket.emit('submitResponse', { room, responses });
+            console.log(responses);
+
+            socket.emit('submitResponse', { room, name, responses });
             alert("Respuestas enviadas correctamente");
         }
 

@@ -10,6 +10,7 @@
     <script>
         let socket;
         let room;
+        let answers = [];
         let surveys = [];
         let isConnected = false;
 
@@ -91,14 +92,17 @@
                     }
                 });
 
-                // Escuchar las encuestas que se envían al cliente
-                socket.on('survey', (survey) => {
-                    displaySurvey(survey);
-                });
-
                 // Escuchar mensajes del servidor
                 socket.on('message', (message) => {
                     console.log(message);
+                });
+
+                socket.on('response', ({name, responses}) => {
+                    if (answers.filter(ans => ans.name === name).length > 0) {
+                        answers = answers.filter(ans => ans.name !== name);
+                    }
+                    answers.push({name, responses});
+                    console.log(answers);
                 });
             }
         }
