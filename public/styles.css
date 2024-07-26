@@ -30,7 +30,7 @@ input[type="text"] {
     border-radius: 4px;
 }
 
-button {
+button, #surveyFile {
     padding: 10px 20px;
     margin: 10px 0;
     background-color: #28a745;
@@ -40,7 +40,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+button:hover, #surveyFile:hover {
     background-color: #218838;
 }
 
@@ -82,4 +82,104 @@ button:hover {
 
 .option {
     width: calc(80% - 20px);
+}
+
+/* Estilos del acordeón */
+.accordion {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    outline: none;
+    width: 75%;
+    text-align: left;
+    transition: 0.4s;
+    border-radius: 5px 0 0 5px;
+}
+
+.active,
+.accordion:hover {
+    background-color: #2980b9;
+}
+
+.panel {
+    padding: 10px;
+    display: none;
+    background-color: white;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.survey-section {
+    margin-bottom: 15px;
+}
+
+.survey-section p {
+    font-weight: bold;
+}
+
+.survey-section div {
+    margin: 5px 0;
+}
+
+.survey-section input[type="radio"] {
+    margin-right: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Estilos de errores */
+#error, .error {
+    background-color: red;
+    margin-top: 10px;
+}
+
+/* Estilos del contenedor de botones */
+.button-container {
+    display: flex;
+    /* Habilitar flexbox */
+    align-items: center;
+    /* Alinear verticalmente los elementos al centro */
+    width: 100%;
+}
+
+#sendSurvey {
+    padding: 10px;
+    width: 25%;
+    /* Asignar el 25% del ancho al botón Iniciar Encuesta */
+    border-radius: 0 5px 5px 0;
+    /* Borde redondeado solo en la esquina derecha */
+}
+
+#responseContainer {
+    margin-top: 30px;
+}
+
+/* Estilos para la lista de respuestas */
+.response-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.response-item {
+    margin-bottom: 10px;
+    width: auto;
+    border-radius: 5px;
 }
