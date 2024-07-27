@@ -82,3 +82,9 @@ function parseSurveyFile(text) {
         questionsContainer.appendChild(questionDiv);
     });
 }
+
+module.exports = {
+    createSurvey,
+    parseSurveyFile,
+    addQuestion
+};
